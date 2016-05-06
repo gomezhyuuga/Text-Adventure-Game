@@ -12,6 +12,7 @@ end
 
 #The Movement class, specifies the valid movements in the room
 class Movement < Sequel::Model
+  # Gets the room asociated to this movements
   def room
     Room[self.room_name]
   end

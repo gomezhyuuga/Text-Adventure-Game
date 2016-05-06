@@ -3,17 +3,18 @@
 # Authors: A01020319 Fernando Gomez Herrera
 #          A01371743 Luis Eduardo Ballinas Aguilar
 
-#The ExploringState class, allows to the user: fight with a monster
-#see your currents status, use magic, consume food, valid movements
-#pick up treasures and so on
-#
 require_relative 'fighting_state'
 
+## +ExploringState+ class
+# It represents
+# The ExploringState class, allows to the user: fight with a monster
+# see your currents status, use magic, consume food, valid movements
+# pick up treasures and so on
 class ExploringState
+  # Initializer for the State
   def initialize(game)
     @game = game
   end
-
 
   # Returns the current status of the state. This includes:
   # - Player status

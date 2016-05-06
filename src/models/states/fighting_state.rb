@@ -140,7 +140,11 @@ class FightingState
         player.strength /= 2
       end
 
-      @game.state = ExploringState.new @game
+      if player.strength > 0
+        @game.state = ExploringState.new @game
+      else
+        @game.state = LostState.new @game
+      end
 
       output
   end

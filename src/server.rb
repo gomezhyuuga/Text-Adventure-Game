@@ -23,25 +23,30 @@ enable :sessions
 set :bind, '0.0.0.0'
 set :session_secret, 'SecretString#!$%'
 
+# Index page
 get '/' do
   erb :index
 end
 
+# Main game console
 get '/console' do
   session[:game] ||= Game.new Player.new "parzival"
   erb :console
 end
 
+# Creates a game
 post '/' do
   session[:game] = Game.new Player.new params[:player_name]
   redirect '/console'
 end
 
+# Gets the current status for the game state
 get '/status' do
   get_status.to_json
 end
 
 
+# Generic route to send a command to be executed
 post '/send_command' do
   status = Hash.new
 
@@ -61,6 +66,7 @@ post '/send_command' do
   status.to_json
 end
 
+# Route to specify that a fight is going to start
 post '/fight' do
   status = get_status
 
@@ -79,6 +85,7 @@ post '/fight' do
 end
 
 private
+# Gets the current status for a given state
 def get_status
   game = session[:game]
   status = Hash.new

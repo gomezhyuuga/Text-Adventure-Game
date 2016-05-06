@@ -13,12 +13,16 @@ require_relative 'room'
 require_relative 'movement'
 require_relative 'states/fighting_state'
 
+# GameIO class to redirect STDIN
 class GameIO < IO
+  # Where to write the output
   attr_accessor :file
+  # Initializer
   def initialize(orig, file)
     @orig = orig
     @file = file
   end
+  # Write ouput to +file+
   def write string
     @file << string
     @orig.write string
