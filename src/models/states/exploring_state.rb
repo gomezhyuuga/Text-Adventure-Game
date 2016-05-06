@@ -127,9 +127,9 @@ class ExploringState
 
     @game.player.wealth += treasure
 
+    @game.rooms_status[@game.current_room] ||= []
+    @game.rooms_status[@game.current_room] << :treasure
     return "You picked-up gems worth $#{treasure}\n"
-
-    # TODO: update room status
   end
 
   # Move from one room to another
