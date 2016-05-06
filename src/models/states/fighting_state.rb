@@ -14,7 +14,7 @@ class FightingState
   # waiting fo the player to chose a weapon to fight with.
   def status
     monster = @game.current_room_model.monster
-    return unless monster
+    return unless @game.monster_inside?
 
     weapons = @game.player.weapons
 
@@ -30,7 +30,7 @@ class FightingState
   def handle(weapon)
     weapon = weapon.to_sym if weapon
     output = ""
-    return "No monster here\n" unless @game.current_room_model.monster
+    return "No monster here\n" unless @game.monster_inside?
     # Get the input for the user
 
     player = @game.player
@@ -134,16 +134,13 @@ class FightingState
         output << "And you managed to kill the #{@game.current_room_model.monster.name}\n"
         player.monsters_killed += 1
 
-        @game.rooms_status[@game.current_room] ||= []
-        @game.rooms_status[@game.current_room] << :monster
+        @game.update_room_status :monster
       else
         output << "The #{@game.current_room_model.monster.name} defeated you\n"
         player.strength /= 2
       end
-      @game.state = ExploringState.new @game
 
-      output << "\n"
-      output << @game.state.status
+      @game.state = ExploringState.new @game
 
       output
   end

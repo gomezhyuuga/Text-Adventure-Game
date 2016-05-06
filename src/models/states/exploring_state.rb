@@ -28,10 +28,11 @@ class ExploringState
     output << "#{@game.current_room_model.description}\n"
 
     treasure = @game.current_room_model.treasure
-    output << "\nThere is treasure here worth $#{treasure}.\n" if treasure && treasure > 0
+    if @game.treasure_inside?
+      output << "\nThere is treasure here worth $#{treasure}.\n"
+    end
 
-    monster = @game.current_room_model.monster
-    if monster
+    if @game.monster_inside?
       output << "\nDANGER... THERE IS A MONSTER HERE....\n\n"
       output << "#{@game.current_room_model.monster}\n\n"
     end
@@ -75,8 +76,10 @@ class ExploringState
       output << self.send(method)
     end
 
-    output << "\n"
-    output << self.status
+    if method != :fight
+      output << "\n"
+      output << self.status
+    end
 
     output
   end
@@ -95,16 +98,17 @@ class ExploringState
 
   #Allows the player to change the current state of the game to FightingState
   def fight
-    monster = @game.current_room_model.monster
     player = @game.player
-    return unless monster
+    return unless @game.monster_inside?
 
     @game.state = FightingState.new @game
 
     if not player.weapons.empty?
       @game.state.status # Ask for weapon
     else
-      @game.state.handle( nil ) # Start the fight directly
+      output = @game.state.handle( nil ) # Start the fight directly
+      output << "\n"
+      output << self.status
     end
   end
 
@@ -119,23 +123,21 @@ class ExploringState
 
   # Pick-up the treasure in the room if there is any
   def pick_up
-    treasure = @game.current_room_model.treasure
+    treasure = @game.treasure_inside?
     has_torch = @game.player.has_torch?
 
-    return "There is no treasure to pick up\n" unless treasure && treasure > 0
+    return "There is no treasure to pick up\n" unless treasure
     return "You cannot see where it is\n" unless has_torch
 
-    @game.player.wealth += treasure
+    @game.player.wealth += @game.current_room_model.treasure
 
-    @game.rooms_status[@game.current_room] ||= []
-    @game.rooms_status[@game.current_room] << :treasure
-    return "You picked-up gems worth $#{treasure}\n"
+    @game.update_room_status :treasure
+    return "You picked-up gems worth $#{@game.current_room_model.treasure}\n"
   end
 
   # Move from one room to another
   def move(direction)
     movements = @game.current_room_model.movement
-    monster = @game.current_room_model.monster
 
     if direction == :north and not movements.north
       return "No exit that way"
@@ -151,7 +153,7 @@ class ExploringState
       return "You cannot go down this floor"
     end
 
-    return "Monster shouts: YOU SHALL NOT PASS!!" if monster && rand < 0.1
+    return "Monster shouts: YOU SHALL NOT PASS!!" if @game.monster_inside? && rand < 0.1
 
     @game.current_room = movements.send(direction)
     @game.player.tally += 1

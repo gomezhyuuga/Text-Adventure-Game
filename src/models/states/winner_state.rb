@@ -1,10 +1,15 @@
 class WinnerState
-
-  def hande
+  def status
     output = ""
 
     output << "You won!! you have scaped with life from the castle!!! "
     output << "WELL DONE!!"
-  output
+  end
+  def initialize(game)
+    @game = game
+  end
+
+  def handle
+    self.status
   end
 end

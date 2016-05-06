@@ -53,10 +53,22 @@ class Game
 
   # Checks if there is any game left in the room
   def monster_inside?
-    not (@rooms_status[@current_room] && @rooms_status[@current_room].include?(:monster))
+    return false unless self.current_room_model.monster
+    not (@rooms_status[@current_room] &&
+         @rooms_status[@current_room].include?(:monster))
   end
   # Checks if there is any treasure left in the room
   def treasure_inside?
-    not (@rooms_status[@current_room] && @rooms_status[@current_room].include?(:treasure))
+    treasure = self.current_room_model.treasure
+    return false if treasure == nil || treasure == 0
+
+    not (@rooms_status[@current_room] &&
+         @rooms_status[@current_room].include?(:treasure))
+  end
+  # Updates the status for the current room, remembering if the +param+ is left
+  # or not in the room.
+  def update_room_status(key)
+    @rooms_status[@current_room] ||= []
+    @rooms_status[@current_room] << key
   end
 end
