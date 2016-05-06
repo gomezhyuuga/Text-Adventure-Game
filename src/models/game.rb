@@ -5,8 +5,19 @@
 
 require_relative "states/exploring_state"
 class Game
-  attr_accessor :player, :current_room, :state
+  # Player associated to a game
+  attr_accessor :player
+  # The room that the player is currently exploring
+  attr_accessor :current_room
+  # Current game state. This can be either:
+  # - ExploringState
+  # - FightingState
+  # - BuyingState
+  # - LostState
+  # - WinnerState
+  attr_accessor :state
 
+  # Status of the rooms in this game
   # e.g. rooms_status
   #   rooms_status = {
   #     "Hallway": #{ :monster, :treasure }
@@ -16,10 +27,14 @@ class Game
   # and either killed a monster or picked-up a treasure inside the room.
   # If the keyword :monster or :treasure is inside the value of the key, it means
   # that you have killed the monster and/or picked-up the treasure.
+  attr_accessor :rooms_status
+
+  # Game initializar. Receives a +player+ as parameter and associates it a game.
   def initialize(player)
-    @player = player
+    @player       = player
     @current_room = "Entrance"
-    @state = ExploringState.new self
+    @state        = ExploringState.new self
+    @rooms_status = Hash.new
   end
  #to String method that shows the player name, the current room and the state.
   def to_s
