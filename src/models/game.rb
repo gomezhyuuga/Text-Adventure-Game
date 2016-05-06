@@ -4,6 +4,11 @@
 #          A01371743 Luis Eduardo Ballinas Aguilar
 
 require_relative "states/exploring_state"
+
+# +Game+ class instances represents games currently playing.
+# It uses the StatePattern to save the state of the current game
+# and what is doing the player. It also stores the game progress by
+# remembering which rooms the player has visited.
 class Game
   # Player associated to a game
   attr_accessor :player
@@ -44,5 +49,14 @@ class Game
   # Returns the +Sequel::Model+ object for the current room
   def current_room_model
     Room[self.current_room]
+  end
+
+  # Checks if there is any game left in the room
+  def monster_inside?
+    not (@rooms_status[@current_room] && @rooms_status[@current_room].include?(:monster))
+  end
+  # Checks if there is any treasure left in the room
+  def treasure_inside?
+    not (@rooms_status[@current_room] && @rooms_status[@current_room].include?(:treasure))
   end
 end
