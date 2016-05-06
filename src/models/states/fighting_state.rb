@@ -131,10 +131,11 @@ class FightingState
 
       #if the condition of the loop do is false
       if rand() * 16 > new_ferocity
-        # TODO implement the to_s from monster
         output << "And you managed to kill the #{@game.current_room_model.monster.name}\n"
         player.monsters_killed += 1
-        # TODO update game room status
+
+        @game.rooms_status[@game.current_room] ||= []
+        @game.rooms_status[@game.current_room] << :monster
       else
         output << "The #{@game.current_room_model.monster.name} defeated you\n"
         player.strength /= 2
