@@ -1,2 +1,4 @@
 doc/
 game.db
+.DS_Store
+.bundle/
